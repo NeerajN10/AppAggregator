@@ -9,25 +9,25 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-import environ
+# import environ
 from datetime import timedelta
 from pathlib import Path
-
+from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-env = environ.Env()
-environ.Env.read_env()
+#
+# env = environ.Env()
+# environ.Env.read_env()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG')
+DEBUG = config('DEBUG')
 
 ALLOWED_HOSTS = ["*"]
 
@@ -116,12 +116,12 @@ WSGI_APPLICATION = 'AppAggregator.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env('POSTGRES_DB'),
-        'HOST': env('POSTGRES_HOST'),
-        'USER': env('POSTGRES_USER'),
-        'PASSWORD': env('POSTGRES_PASSWORD'),
-        'PORT': env('POSTGRES_PORT'),
-        'CONN_MAX_AGE': int(env('POSTGRES_CONN_MAX_AGE')),
+        'NAME': config('POSTGRES_DB'),
+        'HOST': config('POSTGRES_HOST'),
+        'USER': config('POSTGRES_USER'),
+        'PASSWORD': config('POSTGRES_PASSWORD'),
+        'PORT': config('POSTGRES_PORT'),
+        'CONN_MAX_AGE': int(config('POSTGRES_CONN_MAX_AGE')),
     }
 }
 
