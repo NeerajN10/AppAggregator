@@ -10,6 +10,8 @@ services:
       POSTGRES_HOST:
       POSTGRES_CONN_MAX_AGE:
       POSTGRES_PORT:
+    env_file:
+      - ./AppAggregator/.env
 
   web:
     env_file:
