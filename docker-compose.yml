@@ -3,13 +3,13 @@ version: '3'
 services:
   db:
     image: postgres:latest
-    environment:
-      POSTGRES_DB:
-      POSTGRES_USER:
-      POSTGRES_PASSWORD:
-      POSTGRES_HOST:
-      POSTGRES_CONN_MAX_AGE:
-      POSTGRES_PORT:
+#    environment:
+#      POSTGRES_DB:
+#      POSTGRES_USER:
+#      POSTGRES_PASSWORD:
+#      POSTGRES_HOST:
+#      POSTGRES_CONN_MAX_AGE:
+#      POSTGRES_PORT:
     env_file:
       - ./AppAggregator/.env
 
@@ -24,6 +24,6 @@ services:
       - "8000:8000"
     depends_on:
       - db
-    environment:
-      DEBUG:
-      SECRET_KEY:
+#    environment:
+#      DEBUG:
+#      SECRET_KEY:
