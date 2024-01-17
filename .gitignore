@@ -1,0 +1,7 @@
+config.ini
+Scripts/
+Lib/
+*.xml
+*.iml
+*.cfg
+.idea/
