@@ -5,3 +5,4 @@ Lib/
 *.iml
 *.cfg
 .idea/
+.env
