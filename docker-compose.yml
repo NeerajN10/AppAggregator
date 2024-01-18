@@ -23,3 +23,6 @@ services:
     environment:
       DEBUG:
       SECRET_KEY:
+
+volumes:
+  postgres_data:
