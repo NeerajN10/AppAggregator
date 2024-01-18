@@ -120,7 +120,6 @@ DATABASES = {
         'HOST': config('POSTGRES_HOST'),
         'USER': config('POSTGRES_USER'),
         'PASSWORD': config('POSTGRES_PASSWORD'),
-        'PORT': config('POSTGRES_PORT'),
         'CONN_MAX_AGE': int(config('POSTGRES_CONN_MAX_AGE')),
     }
 }
