@@ -26,7 +26,9 @@ class Command(BaseCommand):
                     User(
                         username=row['username'],
                         type=UserTypes.AGGREGATOR if row['type'] == UserTypes.AGGREGATOR.name else UserTypes.USER,
-                        password=make_password(row['password'])
+                        password=make_password(row['password']),
+                        first_name=row['first_name'],
+                        last_name=row['last_name']
                     )
                 )
 

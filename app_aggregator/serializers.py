@@ -3,10 +3,12 @@ from django.db import transaction
 from rest_framework import serializers, status
 from bs4 import BeautifulSoup
 
+from app_aggregator.model_choices import UserTypes
 from app_aggregator.models import AppData, UserPurchasedApps
 
 
 class AppDataSerializer(serializers.ModelSerializer):
+    created_by_name = serializers.CharField(source='created_by.get_full_name', read_only=True)
 
     class Meta:
         model = AppData
@@ -22,14 +24,28 @@ class AppDataSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
-        url = validated_data.get('url')
+        url = validated_data.get('url', '')
+
+        if not url.startswith("https://play.google.com/store/apps/details?id="):
+            raise serializers.ValidationError(
+                "Invalid Play Store URL.",
+                code=status.HTTP_412_PRECONDITION_FAILED)
         response = requests.get(url)
+        logged_in_user = self.context.get('request').user
+
+        if logged_in_user.type != UserTypes.AGGREGATOR:
+            raise serializers.ValidationError(detail='Only Aggregators can perform this action',
+                                              code=status.HTTP_412_PRECONDITION_FAILED)
+
         active = validated_data.get('active', False)
 
         # Parse the HTML content
         soup = BeautifulSoup(response.text, 'lxml')
 
         # Extract information using BeautifulSoup methods, we can add more data after carefully parsing the contents.
+        if not soup.find('h1'):
+            raise serializers.ValidationError(detail='Looks like the URL is malformed.',
+                                              code=status.HTTP_412_PRECONDITION_FAILED)
         name = soup.find('h1').text
         description = soup.find('div', class_='bARER').contents[0]
         validated_data['name'] = name
