@@ -6,7 +6,7 @@ from app_aggregator.model_choices import UserTypes
 
 
 class User(AbstractUser):
-    type = models.PositiveSmallIntegerField(choices=UserTypes.choices)
+    type = models.PositiveSmallIntegerField(choices=UserTypes.choices, default=UserTypes.AGGREGATOR)
 
 
 class AppData(models.Model):

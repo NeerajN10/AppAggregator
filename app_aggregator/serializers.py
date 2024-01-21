@@ -4,7 +4,7 @@ from rest_framework import serializers, status
 from bs4 import BeautifulSoup
 
 from app_aggregator.model_choices import UserTypes
-from app_aggregator.models import AppData, UserPurchasedApps
+from app_aggregator.models import AppData, UserPurchasedApps, User
 
 
 class AppDataSerializer(serializers.ModelSerializer):
@@ -73,3 +73,9 @@ class UserPurchasedAppsSerializer(serializers.ModelSerializer):
                                               code=status.HTTP_412_PRECONDITION_FAILED)
         instance = super(UserPurchasedAppsSerializer, self).create(validated_data=validated_data)
         return instance
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'

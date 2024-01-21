@@ -1,3 +1,5 @@
+import pandas as pd
+from django.contrib.auth.hashers import make_password
 from django.db import transaction
 from rest_framework import mixins, status
 from rest_framework.decorators import action
@@ -5,10 +7,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from AppAggregator.customs.permissions import IsAggregatorAuthenticated
+from AppAggregator.customs.permissions import IsAggregatorAuthenticated, IsSuperUser
 from AppAggregator.customs.viewsets import CustomModelViewSet
-from app_aggregator.models import AppData, UserPurchasedApps
-from app_aggregator.serializers import AppDataSerializer, UserPurchasedAppsSerializer
+from app_aggregator.model_choices import UserTypes
+from app_aggregator.models import AppData, UserPurchasedApps, User
+from app_aggregator.serializers import AppDataSerializer, UserPurchasedAppsSerializer, UserSerializer
 
 
 class AppDataViewSet(CustomModelViewSet):
@@ -76,3 +79,36 @@ class UserPurchasesViewSet(CustomModelViewSet):
         purchase = self.get_object()
         purchase.delete()
         return Response(data=f"Successfully Deleted {purchase.app.name}", status=status.HTTP_200_OK)
+
+
+class UserViewSet(CustomModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsSuperUser]
+
+    @action(methods=['POST'], detail=False, url_name='upload_data')
+    def upload_data(self, request, pk=None):
+        file = request.FILES['file']
+        df = pd.read_excel(file)
+
+        data = []
+        for _, row in df.iterrows():
+            data.append(
+                {
+                    'username': row['username'],
+                    'type': UserTypes.AGGREGATOR if row['type'] == UserTypes.AGGREGATOR.name else UserTypes.USER,
+                    'password': make_password(row['password']),
+                    'first_name': row['first_name'],
+                    'last_name': row['last_name']
+                }
+            )
+
+        serializer = self.serializer_class(data=data, many=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(data="Data was imported Successfully", status=status.HTTP_200_OK)
+
+        else:
+            return Response(data="Data was not imported. "
+                                 "Please check if fields are correct and user does not exist already in DB",
+                            status=status.HTTP_400_BAD_REQUEST)
