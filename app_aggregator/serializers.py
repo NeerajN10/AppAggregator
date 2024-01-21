@@ -31,11 +31,6 @@ class AppDataSerializer(serializers.ModelSerializer):
                 "Invalid Play Store URL.",
                 code=status.HTTP_412_PRECONDITION_FAILED)
         response = requests.get(url)
-        logged_in_user = self.context.get('request').user
-
-        if logged_in_user.type != UserTypes.AGGREGATOR:
-            raise serializers.ValidationError(detail='Only Aggregators can perform this action',
-                                              code=status.HTTP_412_PRECONDITION_FAILED)
 
         active = validated_data.get('active', False)
 

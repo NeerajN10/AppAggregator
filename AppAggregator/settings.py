@@ -63,7 +63,8 @@ MIDDLEWARE = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+    'EXCEPTION_HANDLER': 'AppAggregator.customs.exception_handler.custom_exception_handler'
 }
 
 ROOT_URLCONF = 'AppAggregator.urls'
