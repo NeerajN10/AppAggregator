@@ -6,3 +6,4 @@ Lib/
 *.cfg
 .idea/
 .env
+*.xlsx
