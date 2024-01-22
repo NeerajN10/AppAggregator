@@ -17,10 +17,12 @@ class Command(BaseCommand):
         password = options['password']
         email = options['email']
 
-        try:
-            User.objects.get_or_create(username=username, password=make_password(password), email=email,
-                                       is_superuser=True)
+        user, created = User.objects.get_or_create(username=username, email=email, is_superuser=True)
+        if created:
+            user.password = make_password(password)
+            user.save()
             self.stdout.write(self.style.SUCCESS('Admin Created'))
-
-        except Exception as e:
-            self.stderr.write(self.style.ERROR(f'Error: {str(e)}'))
+        elif user:
+            self.stdout.write(self.style.SUCCESS('Admin Already exists'))
+        else:
+            self.stderr.write(self.style.ERROR('Error'))
