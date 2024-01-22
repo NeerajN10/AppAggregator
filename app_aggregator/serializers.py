@@ -22,14 +22,20 @@ class AppDataSerializer(serializers.ModelSerializer):
             }
         }
 
-    @transaction.atomic
-    def create(self, validated_data):
+    def validate(self, validated_data):
         url = validated_data.get('url', '')
 
         if not url.startswith("https://play.google.com/store/apps/details?id="):
             raise serializers.ValidationError(
                 "Invalid Play Store URL.",
                 code=status.HTTP_412_PRECONDITION_FAILED)
+
+        return super().validate(validated_data)
+
+    @transaction.atomic
+    def create(self, validated_data):
+        url = validated_data['url']
+
         response = requests.get(url)
 
         active = validated_data.get('active', False)
@@ -62,8 +68,7 @@ class UserPurchasedAppsSerializer(serializers.ModelSerializer):
             },
         }
 
-    @transaction.atomic
-    def create(self, validated_data):
+    def validate(self, validated_data):
         logged_in_user = self.context.get('request').user
         validated_data['user'] = logged_in_user
         validated_data['active'] = True
@@ -71,6 +76,11 @@ class UserPurchasedAppsSerializer(serializers.ModelSerializer):
         if logged_in_user.purchased_app.filter(app_id=validated_data['app'].id).exists():
             raise serializers.ValidationError(detail='You have already purchased this app.',
                                               code=status.HTTP_412_PRECONDITION_FAILED)
+
+        return super().validate(validated_data)
+
+    @transaction.atomic
+    def create(self, validated_data):
         instance = super(UserPurchasedAppsSerializer, self).create(validated_data=validated_data)
         return instance
 

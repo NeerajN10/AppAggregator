@@ -18,7 +18,8 @@ class Command(BaseCommand):
         email = options['email']
 
         try:
-            User.objects.create(username=username, password=make_password(password), email=email, is_superuser=True)
+            User.objects.get_or_create(username=username, password=make_password(password), email=email,
+                                       is_superuser=True)
             self.stdout.write(self.style.SUCCESS('Admin Created'))
 
         except Exception as e:
