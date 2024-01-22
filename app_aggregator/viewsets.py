@@ -1,20 +1,19 @@
 import pandas as pd
 from django.contrib.auth.hashers import make_password
 from django.db import transaction
-from rest_framework import mixins, status
+from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from AppAggregator.customs.permissions import IsAggregatorAuthenticated, IsSuperUser
-from AppAggregator.customs.viewsets import CustomModelViewSet
 from app_aggregator.model_choices import UserTypes
 from app_aggregator.models import AppData, UserPurchasedApps, User
 from app_aggregator.serializers import AppDataSerializer, UserPurchasedAppsSerializer, UserSerializer
 
 
-class AppDataViewSet(CustomModelViewSet):
+class AppDataViewSet(viewsets.ModelViewSet):
     queryset = AppData.objects.all()
     serializer_class = AppDataSerializer
     permission_classes = [IsAggregatorAuthenticated]
@@ -51,7 +50,7 @@ class AppListViewSet(mixins.ListModelMixin, GenericViewSet):
     permission_classes = [IsAuthenticated]
 
 
-class UserPurchasesViewSet(CustomModelViewSet):
+class UserPurchasesViewSet(viewsets.ModelViewSet):
     queryset = UserPurchasedApps.objects.all()
     serializer_class = UserPurchasedAppsSerializer
     permission_classes = [IsAuthenticated]
@@ -81,7 +80,7 @@ class UserPurchasesViewSet(CustomModelViewSet):
         return Response(data=f"Successfully Deleted {purchase.app.name}", status=status.HTTP_200_OK)
 
 
-class UserViewSet(CustomModelViewSet):
+class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsSuperUser]
