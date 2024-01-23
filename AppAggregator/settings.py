@@ -112,7 +112,6 @@ SIMPLE_JWT = {
 }
 
 SPECTACULAR_SETTINGS = {}
-print('debug', DEBUG, type(DEBUG))
 if DEBUG:
     SPECTACULAR_SETTINGS = {
         'TITLE': 'App Aggregator API',
@@ -123,7 +122,6 @@ if DEBUG:
         'SWAGGER_UI_FAVICON_HREF': 'SIDECAR',
         'REDOC_DIST': 'SIDECAR',
     }
-print(SPECTACULAR_SETTINGS)
 
 WSGI_APPLICATION = 'AppAggregator.wsgi.application'
 
