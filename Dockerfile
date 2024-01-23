@@ -1,9 +1,10 @@
 FROM python:3.10.9
 
+RUN git clone https://github.com/NeerajN10/AppAggregator.git /app_agg
+
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-
-RUN git clone https://github.com/NeerajN10/AppAggregator.git /app_agg
+ENV PYTHONPATH "${PYTHONPATH}:/app_agg"
 
 WORKDIR /app_agg
 
