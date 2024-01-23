@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG')
+DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = ["*"]
 
@@ -44,7 +44,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'app_aggregator.apps.AppAggregatorConfig'
+    'app_aggregator.apps.AppAggregatorConfig',
+    'drf_spectacular',
+    'drf_spectacular_sidecar'
 ]
 
 AUTH_USER_MODEL = 'app_aggregator.User'
@@ -64,7 +66,8 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    'EXCEPTION_HANDLER': 'AppAggregator.customs.exception_handler.custom_exception_handler'
+    'EXCEPTION_HANDLER': 'AppAggregator.customs.exception_handler.custom_exception_handler',
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 ROOT_URLCONF = 'AppAggregator.urls'
@@ -107,6 +110,20 @@ SIMPLE_JWT = {
 
     'JTI_CLAIM': 'jti',
 }
+
+SPECTACULAR_SETTINGS = {}
+print('debug', DEBUG, type(DEBUG))
+if DEBUG:
+    SPECTACULAR_SETTINGS = {
+        'TITLE': 'App Aggregator API',
+        'DESCRIPTION': 'This project aggregates Urls from Playstore and allows users to purchase them for free.',
+        'VERSION': '1.0.0',
+        'SERVE_INCLUDE_SCHEMA': False,
+        'SWAGGER_UI_DIST': 'SIDECAR',
+        'SWAGGER_UI_FAVICON_HREF': 'SIDECAR',
+        'REDOC_DIST': 'SIDECAR',
+    }
+print(SPECTACULAR_SETTINGS)
 
 WSGI_APPLICATION = 'AppAggregator.wsgi.application'
 
