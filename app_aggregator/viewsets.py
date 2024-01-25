@@ -1,6 +1,7 @@
 import pandas as pd
 from django.contrib.auth.hashers import make_password
 from django.db import transaction
+from drf_spectacular.utils import extend_schema
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -13,7 +14,7 @@ from app_aggregator.models import AppData, UserPurchasedApps, User
 from app_aggregator.serializers import AppDataSerializer, UserPurchasedAppsSerializer, UserSerializer
 
 
-class AppDataViewSet(viewsets.ModelViewSet):
+class AppDataViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.ListModelMixin, GenericViewSet):
     queryset = AppData.objects.all()
     serializer_class = AppDataSerializer
     permission_classes = [IsAggregatorAuthenticated]
@@ -50,7 +51,7 @@ class AppListViewSet(mixins.ListModelMixin, GenericViewSet):
     permission_classes = [IsAuthenticated]
 
 
-class UserPurchasesViewSet(viewsets.ModelViewSet):
+class UserPurchasesViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.ListModelMixin, GenericViewSet):
     queryset = UserPurchasedApps.objects.all()
     serializer_class = UserPurchasedAppsSerializer
     permission_classes = [IsAuthenticated]
@@ -80,11 +81,25 @@ class UserPurchasesViewSet(viewsets.ModelViewSet):
         return Response(data=f"Successfully Deleted {purchase.app.name}", status=status.HTTP_200_OK)
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserViewSet(mixins.ListModelMixin, GenericViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsSuperUser]
 
+    @extend_schema(
+        operation_id='upload_file',
+        request={
+            'multipart/form-data': {
+                'type': 'object',
+                'properties': {
+                    'file': {
+                        'type': 'string',
+                        'format': 'binary'
+                    }
+                }
+            }
+        },
+    )
     @action(methods=['POST'], detail=False, url_name='upload_data')
     def upload_data(self, request, pk=None):
         file = request.FILES['file']
