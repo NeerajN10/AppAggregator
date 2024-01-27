@@ -28,6 +28,10 @@ COPY . .
 
 # Expose the port that Django will run on
 EXPOSE 8000
+# Expose port for Grafana
+EXPOSE 3000
+#Expose port for prometheus
+# EXPOSE 9090
 
 # Command to run your application
 # Docker file is used to make only images, so no point in running manage.py here. Instead do it in docker-compose

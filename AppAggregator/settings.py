@@ -46,12 +46,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'app_aggregator.apps.AppAggregatorConfig',
     'drf_spectacular',
-    'drf_spectacular_sidecar'
+    'drf_spectacular_sidecar',
+    'django_prometheus'
 ]
 
 AUTH_USER_MODEL = 'app_aggregator.User'
 
 MIDDLEWARE = [
+    'django_prometheus.middleware.PrometheusBeforeMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -59,7 +61,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django_userforeignkey.middleware.UserForeignKeyMiddleware'
+    'django_userforeignkey.middleware.UserForeignKeyMiddleware',
+    'django_prometheus.middleware.PrometheusAfterMiddleware'
 ]
 
 REST_FRAMEWORK = {
