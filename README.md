@@ -1,6 +1,6 @@
 # App Aggregator
 
-App Aggregator is a Django Rest Framework project that aggregates various apps' data from Playstore url. It uses Django Rest Framework, PostgreSQL, Docker for containerization, JWT token for authorization, and DRF Spectacular for Swagger documentation.
+App Aggregator is a Django Rest Framework project that aggregates various apps' data from Playstore url. It uses Django Rest Framework, PostgreSQL, Docker for containerization, JWT token for authorization, DRF Spectacular for Swagger documentation and Grafana with Prometheus for analytics.
 
 ## Steps to Run Locally
 
